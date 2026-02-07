@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - 'feature/*'
+      - "feature/*"
   pull_request:
     branches:
       - develop
@@ -16,44 +16,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 🧩 1. Baixar o código do repositório
+      # 1️⃣ Checkout
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      # 🐍 2. Configurar Python 3.12.0
-      - name: Configurar Python 3.12.0
+      # 2️⃣ Python
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12.0'
+          python-version: "3.12"
 
-      # ⚡ 3. Cache de dependências (acelera builds)
-      - name: Cache de dependências pip
+      # 3️⃣ Cache pip
+      - name: Cache de dependências
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # 📦 4. Instalar dependências do projeto
+      # 4️⃣ Instalar projeto + deps de dev
       - name: Instalar dependências
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest flake8 pytest-cov
+          pip install -e .[dev]
 
-      # 🔍 5. Análise de estilo com Flake8 (lint)
-      - name: Verificar estilo de código (Flake8)
+      # 5️⃣ Lint com Ruff
+      - name: Lint (Ruff)
         run: |
-          flake8 app tests --ignore=E501,W503 --max-complexity=10 --count
+          ruff check src tests
 
-      # 🧪 6. Rodar testes unitários para branches feature/*
-      - name: Rodar testes unitários
+      # 6️⃣ Testes (feature branches)
+      - name: Testes unitários
         if: startsWith(github.ref, 'refs/heads/feature/')
-        run: pytest tests/unit --maxfail=3 --disable-warnings -q
+        run: |
+          pytest tests --maxfail=3 -q
 
-      # 🧩 7. Rodar testes completos (develop e main)
-      - name: Rodar testes completos
+      # 7️⃣ Testes completos + cobertura (develop/main)
+      - name: Testes completos
         if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
         run: |
-          pytest --cov=app --cov-report=xml --disable-warnings
+          pytest --cov=src --cov-report=xml
