@@ -157,15 +157,7 @@ A cada push ou pull request para a branch `main`.
 
 ---
 
-## 📌 Status
-
-✔️ Pronto para uso
-✔️ Pronto para portfólio
-✔️ Estruturado para evolução
-
----
-
-## ✨ Próximos passos (opcional)
+## ✨ Próximos passos
 
 * adicionar novos conversores (ex: JSON → CSV)
 * endpoint de download direto do arquivo
