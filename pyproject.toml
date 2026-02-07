@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "file-converter-csv-to-xlsx"
+version = "0.1.0"
+description = "Backend service to convert CSV files to XLSX format"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+{ name = "Andreza Conceicao" }
+]
+keywords = ["csv", "xlsx", "file-converter", "fastapi", "backend"]
+classifiers = [
+"Programming Language :: Python :: 3",
+"Framework :: FastAPI",
+"License :: OSI Approved :: MIT License",
+"Operating System :: OS Independent"
+]
+
+[project.dependencies]
+fastapi = "*"
+uvicorn = "*"
+pandas = "*"
+openpyxl = "*"
+python-multipart = "*"
+
+[project.optional-dependencies]
+dev = [
+"pytest",
+"pytest-cov"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-ra -q"
+testpaths = ["tests"]
+
+[tool.pylint.main]
+source-roots = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I", "UP"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pylint.design]
+min-public-methods = 1
