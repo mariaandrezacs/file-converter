@@ -123,18 +123,6 @@ pre-commit install
 
 ---
 
-## 🔁 CI
-
-O projeto possui **pipeline de integração contínua** com GitHub Actions, executando automaticamente:
-
-* lint
-* formatação
-* testes
-
-A cada push ou pull request para a branch `main`.
-
----
-
 ## 🎯 Decisões arquiteturais
 
 * **File Converter** tratado como sistema central
