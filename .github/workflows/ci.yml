@@ -45,7 +45,7 @@ jobs:
   test:
     name: Testes unitários
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/feature/') || github.event_name == 'pull_request'
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/') || github.event_name == 'pull_request'
 
     steps:
       - name: Checkout do código
