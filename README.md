@@ -10,9 +10,10 @@ Este projeto foi pensado como item de **portfólio**, demonstrando organização
 
 O **File Converter** é o sistema principal.
 
-Atualmente, ele possui **um conversor implementado**:
+Atualmente, ele possui **dois conversores implementados**:
 
 * **CSV → XLSX**
+* **JSON → CSV**
 
 A arquitetura foi desenhada para permitir a adição de novos conversores (ex: JSON → CSV, XML → XLSX) **sem alterar o core do sistema**.
 
@@ -29,11 +30,17 @@ O projeto segue uma separação clara de responsabilidades:
 
 ```
 src/
-└── file_converter/
+├── csv_to_xlsx/            # Módulo CSV → XLSX
+│   ├── api/                # Camada HTTP (FastAPI)
+│   ├── services/           # Orquestração do sistema
+│   ├── converters/         # Conversores de arquivos
+│   │   └── csv_to_xlsx.py  # Implementação CSV → XLSX
+│   └── domain/             # Abstrações e contratos
+└── json_to_csv/            # Módulo JSON → CSV
     ├── api/                # Camada HTTP (FastAPI)
     ├── services/           # Orquestração do sistema
     ├── converters/         # Conversores de arquivos
-    │   └── csv_to_xlsx.py  # Implementação CSV → XLSX
+    │   └── json_to_csv.py  # Implementação JSON → CSV
     └── domain/             # Abstrações e contratos
 
 tests/                      # Testes automatizados
@@ -147,7 +154,7 @@ pre-commit install
 
 ## ✨ Próximos passos
 
-* adicionar novos conversores (ex: JSON → CSV)
+* adicionar novos conversores (ex: XML → XLSX)
 * endpoint de download direto do arquivo
 * métricas e observabilidade
 * autenticação
