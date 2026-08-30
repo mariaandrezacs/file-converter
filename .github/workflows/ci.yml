@@ -12,21 +12,19 @@ on:
       - main
 
 jobs:
-  ci:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      # 2️⃣ Python
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      # 3️⃣ Cache pip
       - name: Cache de dependências
         uses: actions/cache@v4
         with:
@@ -35,25 +33,73 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # 4️⃣ Instalar projeto + deps de dev
       - name: Instalar dependências
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
 
-      # 5️⃣ Lint com Ruff
       - name: Lint (Ruff)
         run: |
           ruff check src tests
 
-      # 6️⃣ Testes (feature branches)
+  test:
+    name: Testes unitários
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/feature/')
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache de dependências
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
       - name: Testes unitários
-        if: startsWith(github.ref, 'refs/heads/feature/')
         run: |
           pytest tests --maxfail=3 -q
 
-      # 7️⃣ Testes completos + cobertura (develop/main)
+  coverage:
+    name: Testes completos com cobertura
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache de dependências
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
       - name: Testes completos
-        if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
         run: |
           pytest --cov=src --cov-report=xml
