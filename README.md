@@ -12,19 +12,46 @@ O **File Converter** é o sistema principal.
 
 Atualmente, ele possui os seguintes conversores implementados:
 
+### Planilhas e Dados
+
 * **CSV → JSON**
 * **CSV → XLSX**
 * **CSV → XML**
 * **JSON → CSV**
 * **JSON → XLSX**
 * **JSON → XML**
+* **JSON → YAML**
 * **TXT → CSV**
 * **XLSX → CSV**
 * **XLSX → JSON**
 * **XLSX → XML**
+* **XLSX → PDF**
 * **XML → CSV**
 * **XML → JSON**
 * **XML → XLSX**
+* **YAML → JSON**
+
+### Documentos
+
+* **PDF → Word**
+* **PDF → XLSX**
+* **Word → PDF**
+
+### Imagens
+
+* **JPG → PDF**
+* **JPG → WebP**
+* **PNG → PDF**
+* **PNG → WebP**
+* **WebP → JPG**
+* **WebP → PNG**
+
+### Texto e Código
+
+* **Base64 → Arquivo**
+* **Arquivo → Base64**
+* **HTML → Markdown**
+* **Markdown → HTML**
 
 A arquitetura foi desenhada para permitir a adição de novos conversores **sem alterar o core do sistema**.
 
@@ -42,22 +69,39 @@ O projeto segue uma separação clara de responsabilidades:
 
 ```
 src/
+├── base64_to_file/         # Módulo Base64 → Arquivo
 ├── core/                   # Contratos e rotas compartilhadas
 │   ├── converter.py
 │   └── routes.py
 ├── csv_to_json/            # Módulo CSV → JSON
 ├── csv_to_xlsx/            # Módulo CSV → XLSX
 ├── csv_to_xml/             # Módulo CSV → XML
+├── file_to_base64/         # Módulo Arquivo → Base64
+├── html_to_markdown/       # Módulo HTML → Markdown
+├── jpg_to_pdf/             # Módulo JPG → PDF
+├── jpg_to_webp/            # Módulo JPG → WebP
 ├── json_to_csv/            # Módulo JSON → CSV
 ├── json_to_xlsx/           # Módulo JSON → XLSX
 ├── json_to_xml/            # Módulo JSON → XML
+├── json_to_yaml/           # Módulo JSON → YAML
+├── markdown_to_html/       # Módulo Markdown → HTML
+├── pdf_to_word/            # Módulo PDF → Word
+├── pdf_to_xlsx/            # Módulo PDF → XLSX
+├── png_to_pdf/             # Módulo PNG → PDF
+├── png_to_webp/            # Módulo PNG → WebP
 ├── txt_to_csv/             # Módulo TXT → CSV
+├── webp_to_jpg/            # Módulo WebP → JPG
+├── webp_to_png/            # Módulo WebP → PNG
+├── word_to_pdf/            # Módulo Word → PDF
 ├── xlsx_to_csv/            # Módulo XLSX → CSV
 ├── xlsx_to_json/           # Módulo XLSX → JSON
+├── xlsx_to_pdf/            # Módulo XLSX → PDF
 ├── xlsx_to_xml/            # Módulo XLSX → XML
 ├── xml_to_csv/             # Módulo XML → CSV
 ├── xml_to_json/            # Módulo XML → JSON
-└── xml_to_xlsx/            # Módulo XML → XLSX
+├── xml_to_xlsx/            # Módulo XML → XLSX
+├── yaml_to_json/           # Módulo YAML → JSON
+└── ...                     # Próximos conversores
 
 tests/                      # Testes automatizados
 main.py                     # Entry point da aplicação
@@ -74,6 +118,13 @@ main.py                     # Entry point da aplicação
 * OpenPyXL
 * python-multipart
 * defusedxml
+* PyYAML
+* Markdown
+* BeautifulSoup4
+* pypdf
+* python-docx
+* ReportLab
+* Pillow
 * Pytest
 * Ruff / Black / Pylint
 * Docker
@@ -132,6 +183,16 @@ Exemplos:
 * `POST /convert/csv-to-xlsx`
 * `POST /convert/json-to-csv`
 * `POST /convert/xml-to-json`
+* `POST /convert/yaml-to-json`
+* `POST /convert/json-to-yaml`
+* `POST /convert/xlsx-to-pdf`
+* `POST /convert/word-to-pdf`
+* `POST /convert/jpg-to-pdf`
+* `POST /convert/webp-to-jpg`
+* `POST /convert/markdown-to-html`
+* `POST /convert/html-to-markdown`
+* `POST /convert/file-to-base64`
+* `POST /convert/base64-to-file`
 
 Além disso, o sistema disponibiliza:
 
@@ -186,6 +247,8 @@ pre-commit install
 ## Próximos passos
 
 * adicionar validação de tipos MIME e extensão
+* centralizar roteamento de conversores
+* melhorar extração de tabelas de PDF
+* adicionar suporte a HEIC e PDF → imagem
 * métricas e observabilidade
 * autenticação
-* expansão para PDF, imagens, YAML, Markdown e Base64
