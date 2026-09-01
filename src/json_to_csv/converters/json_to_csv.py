@@ -4,7 +4,7 @@ import json
 
 import pandas as pd
 
-from src.csv_to_xlsx.converters.base import Converter
+from src.core.converter import Converter
 
 
 class JsonToCsvConverter(Converter):

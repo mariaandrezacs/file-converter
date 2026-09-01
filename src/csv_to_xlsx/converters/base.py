@@ -1,12 +1,5 @@
-"""Base abstractions for file converters."""
+"""Re-export the shared Converter base class for backwards compatibility."""
 
-from abc import ABC, abstractmethod
-from typing import BinaryIO
+from src.core.converter import Converter
 
-
-class Converter(ABC):
-    """Abstract base class for file converters."""
-
-    @abstractmethod
-    def convert(self, file: BinaryIO, **options) -> dict:
-        """Recebe um arquivo e retorna o resultado da conversão."""
+__all__ = ["Converter"]
