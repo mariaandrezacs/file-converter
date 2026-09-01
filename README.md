@@ -242,13 +242,4 @@ pre-commit install
 * classes de conversão seguindo padrão Strategy
 * ferramentas de lint usadas como apoio à qualidade, não como dogma
 
----
 
-## Próximos passos
-
-* adicionar validação de tipos MIME e extensão
-* centralizar roteamento de conversores
-* melhorar extração de tabelas de PDF
-* adicionar suporte a HEIC e PDF → imagem
-* métricas e observabilidade
-* autenticação
