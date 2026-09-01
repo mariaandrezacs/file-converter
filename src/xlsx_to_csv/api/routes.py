@@ -1,0 +1,39 @@
+"""HTTP routes for XLSX to CSV conversion."""
+
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+
+from src.xlsx_to_csv.services.conversion_service import ConversionService
+
+router = APIRouter()
+
+XLSX_FILE = File(...)
+
+
+def get_conversion_service() -> ConversionService:
+    """Provide a ConversionService instance."""
+    return ConversionService()
+
+
+@router.post("/convert/xlsx-to-csv")
+async def convert_xlsx_to_csv(
+    file: Annotated[UploadFile, XLSX_FILE],
+    delimiter: str = ",",
+    encoding: str = "utf-8",
+    service: ConversionService = Depends(get_conversion_service),
+):
+    """Handle XLSX to CSV conversion request."""
+    if not file.filename.lower().endswith(".xlsx"):
+        raise HTTPException(status_code=400, detail="Arquivo deve ser XLSX")
+
+    try:
+        return service.convert_xlsx_to_csv(
+            file.file,
+            options={
+                "delimiter": delimiter,
+                "encoding": encoding,
+            },
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
