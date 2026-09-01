@@ -33,7 +33,8 @@ dependencies = [
     "uvicorn",
     "pandas",
     "openpyxl",
-    "python-multipart"
+    "python-multipart",
+    "defusedxml"
 ]
 
 [project.optional-dependencies]
