@@ -6,21 +6,31 @@ Este projeto foi pensado como item de **portfólio**, demonstrando organização
 
 ---
 
-## 🧠 Visão do Sistema
+## Visão do Sistema
 
 O **File Converter** é o sistema principal.
 
-Atualmente, ele possui **três conversores implementados**:
+Atualmente, ele possui os seguintes conversores implementados:
 
+* **CSV → JSON**
 * **CSV → XLSX**
+* **CSV → XML**
 * **JSON → CSV**
+* **JSON → XLSX**
+* **JSON → XML**
+* **TXT → CSV**
+* **XLSX → CSV**
+* **XLSX → JSON**
+* **XLSX → XML**
+* **XML → CSV**
+* **XML → JSON**
 * **XML → XLSX**
 
-A arquitetura foi desenhada para permitir a adição de novos conversores (ex: JSON → CSV, XML → XLSX) **sem alterar o core do sistema**.
+A arquitetura foi desenhada para permitir a adição de novos conversores **sem alterar o core do sistema**.
 
 ---
 
-## 🧱 Arquitetura
+## Arquitetura
 
 O projeto segue uma separação clara de responsabilidades:
 
@@ -28,28 +38,26 @@ O projeto segue uma separação clara de responsabilidades:
 * **Services**: orquestração e regras de aplicação
 * **Converters**: lógica pura de conversão
 * **Domain**: contratos e abstrações
+* **Core**: rotas compartilhadas e contratos do sistema
 
 ```
 src/
+├── core/                   # Contratos e rotas compartilhadas
+│   ├── converter.py
+│   └── routes.py
+├── csv_to_json/            # Módulo CSV → JSON
 ├── csv_to_xlsx/            # Módulo CSV → XLSX
-│   ├── api/                # Camada HTTP (FastAPI)
-│   ├── services/           # Orquestração do sistema
-│   ├── converters/         # Conversores de arquivos
-│   │   └── csv_to_xlsx.py  # Implementação CSV → XLSX
-│   └── domain/             # Abstrações e contratos
-└── json_to_csv/            # Módulo JSON → CSV
-    ├── api/                # Camada HTTP (FastAPI)
-    ├── services/           # Orquestração do sistema
-    ├── converters/         # Conversores de arquivos
-    │   └── json_to_csv.py  # Implementação JSON → CSV
-    └── domain/             # Abstrações e contratos
+├── csv_to_xml/             # Módulo CSV → XML
+├── json_to_csv/            # Módulo JSON → CSV
+├── json_to_xlsx/           # Módulo JSON → XLSX
+├── json_to_xml/            # Módulo JSON → XML
+├── txt_to_csv/             # Módulo TXT → CSV
+├── xlsx_to_csv/            # Módulo XLSX → CSV
+├── xlsx_to_json/           # Módulo XLSX → JSON
+├── xlsx_to_xml/            # Módulo XLSX → XML
+├── xml_to_csv/             # Módulo XML → CSV
+├── xml_to_json/            # Módulo XML → JSON
 └── xml_to_xlsx/            # Módulo XML → XLSX
-    ├── api/                # Camada HTTP (FastAPI)
-    ├── services/           # Orquestração do sistema
-    ├── converters/         # Conversores de arquivos
-    │   └── xml_to_xlsx.py  # Implementação XML → XLSX
-    └── domain/             # Abstrações e contratos
-    └── domain/             # Abstrações e contratos
 
 tests/                      # Testes automatizados
 main.py                     # Entry point da aplicação
@@ -57,12 +65,15 @@ main.py                     # Entry point da aplicação
 
 ---
 
-## 🚀 Tecnologias
+## Tecnologias
 
-* Python 3.14+
+* Python 3.10+
 * FastAPI
+* Uvicorn
 * Pandas
 * OpenPyXL
+* python-multipart
+* defusedxml
 * Pytest
 * Ruff / Black / Pylint
 * Docker
@@ -70,22 +81,22 @@ main.py                     # Entry point da aplicação
 
 ---
 
-## ▶️ Executando localmente
+## Executando localmente
 
-### 1️⃣ Criar ambiente virtual
+### 1. Criar ambiente virtual
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 ```
 
-### 2️⃣ Instalar dependências
+### 2. Instalar dependências
 
 ```bash
 pip install -e .[dev]
 ```
 
-### 3️⃣ Subir a aplicação
+### 3. Subir a aplicação
 
 ```bash
 uvicorn main:app --reload
@@ -99,7 +110,7 @@ http://localhost:8000/docs
 
 ---
 
-## 🐳 Executando com Docker
+## Executando com Docker
 
 ```bash
 docker build -t file-converter .
@@ -108,7 +119,27 @@ docker run -p 8000:8000 file-converter
 
 ---
 
-## 🧪 Testes
+## Endpoints
+
+Cada conversor expõe um endpoint específico no padrão:
+
+```
+POST /convert/{source}-to-{target}
+```
+
+Exemplos:
+
+* `POST /convert/csv-to-xlsx`
+* `POST /convert/json-to-csv`
+* `POST /convert/xml-to-json`
+
+Além disso, o sistema disponibiliza:
+
+* `GET /download/{filename}` — download do arquivo gerado anteriormente
+
+---
+
+## Testes
 
 ```bash
 pytest
@@ -116,7 +147,7 @@ pytest
 
 ---
 
-## 🧹 Qualidade de código
+## Qualidade de código
 
 ### Lint
 
@@ -138,31 +169,23 @@ pre-commit install
 
 ---
 
-## 🎯 Decisões arquiteturais
+## Decisões arquiteturais
 
 * **File Converter** tratado como sistema central
-
-* cada conversão implementa um contrato comum (`Converter`)
-
+* cada conversão implementa um contrato comum definido em `src/core/converter.py`
 * conversores isolados da camada HTTP
-
 * arquitetura preparada para múltiplos formatos
-
 * extensibilidade priorizada sobre complexidade precoce
-
 * `src/` isolado para evitar imports acidentais
-
 * exceções de domínio separadas da camada HTTP
-
 * classes de conversão seguindo padrão Strategy
-
 * ferramentas de lint usadas como apoio à qualidade, não como dogma
 
 ---
 
-## ✨ Próximos passos
+## Próximos passos
 
-* adicionar novos conversores (ex: XLSX → CSV)
-* endpoint de download direto do arquivo
+* adicionar validação de tipos MIME e extensão
 * métricas e observabilidade
 * autenticação
+* expansão para PDF, imagens, YAML, Markdown e Base64
